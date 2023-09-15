@@ -14,6 +14,7 @@ void power_manager_init(power_manager_t *power_manager, int mode, int sleep_time
     power_manager->sleep_flag = 0;
     power_manager->sleep_time = sleep_time;
     power_manager->cpu_freq = getCpuFrequencyMhz();
+    power_mode_switch(power_manager->mode);
     #if LOG_TAG
     Serial.println("power_manager_init");
     Serial.print(power_manager->cpu_freq);
@@ -26,15 +27,15 @@ void power_manager_init(power_manager_t *power_manager, int mode, int sleep_time
  * @brief 电源模式切换
  * ! 电源模式切换时会调用相应的回调函数
 */
-_weak_ void full_power_task_handle(void){
+_weak_ void full_power_task_handle(){
     //   Serial.println("full_power_task_handle");
 };
 
-_weak_ void mid_power_task_handle(void){
+_weak_ void mid_power_task_handle(){
     //   Serial.println("mid_power_task_handle");
 };
 
-_weak_ void low_power_task_handle(void){
+_weak_ void low_power_task_handle(){
     //   Serial.println("low_power_task_handle");
 };
 

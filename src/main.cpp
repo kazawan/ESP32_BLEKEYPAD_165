@@ -6,10 +6,11 @@
 
 //POWER
 power_manager_t power_manager;
-#define SLEEP_OVER_TIME 1000*10 //睡眠时间
+#define SLEEP_OVER_TIME 1000*60*15 //睡眠时间
 
 //LED
 #define LED 2       // led引脚
+
 
 //165
 #define DATA 25     // 数据
@@ -66,13 +67,21 @@ void release_handler(int i)
   
 };
 
+void full_power_task_handle(){
+  digitalWrite(LED, HIGH);
+};
+
+void low_power_task_handle(){
+  digitalWrite(LED, LOW);
+};
+
 void setup()
 {
-  // bt.begin("ESP32");
-  power_manager_init(&power_manager, fullpower, SLEEP_OVER_TIME);
-  ble.begin();
+  
   pinMode(LED, OUTPUT);
-  digitalWrite(LED, LOW);
+  digitalWrite(LED, 1);
+  ble.begin();
+  power_manager_init(&power_manager, fullpower, SLEEP_OVER_TIME);
   hc165_init(&hc165, btn165, key_nums);
 
   
@@ -84,3 +93,5 @@ void loop()
   power_check(&power_manager);
   hc165_scan(&hc165, key_map, btn165);
 }
+
+
