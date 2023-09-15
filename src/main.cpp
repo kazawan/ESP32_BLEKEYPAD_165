@@ -3,6 +3,11 @@
 #include "BluetoothSerial.h"
 #include "hc165.h"
 #include "power_manager.h"
+//todo
+//添加按键检测
+
+
+
 
 //POWER
 power_manager_t power_manager;
