@@ -4,7 +4,7 @@
 #include "hc165.h"
 #include "power_manager.h"
 //todo
-//添加按键检测
+//添加电源检测
 
 
 
