@@ -3,10 +3,16 @@
 #include "BluetoothSerial.h"
 #include "hc165.h"
 #include "power_manager.h"
-//todo
+
+//ttl
+// BluetoothSerial BT;
+
+
 //添加电源检测
-
-
+#define check_en 14
+#define check_pin 35
+lipo_t battey;
+#define battery_check_loop 1000*60*5 //电池检测时间
 
 
 //POWER
@@ -56,7 +62,11 @@ KEYMAP_typeDef key_map[] =
         {'5'}, 
 };
 
+void battery_check_loop_handle()
+{
+  ble.setBatteryLevel(battey.percent);
 
+}
 
 // weak定义函数
 void press_handler(int i)
@@ -82,19 +92,20 @@ void low_power_task_handle(){
 
 void setup()
 {
-  
+  Serial.begin(115200);
+
   pinMode(LED, OUTPUT);
   digitalWrite(LED, 1);
-  ble.begin();
+  battery_init(&battey,check_en,check_pin);
   power_manager_init(&power_manager, fullpower, SLEEP_OVER_TIME);
-  hc165_init(&hc165, btn165, key_nums);
-
-  
-  
+  hc165_init(&hc165, btn165, key_nums);  
+  ble.begin();
+  ble.setBatteryLevel(get_battery_percent(&battey));
 }
 
 void loop()
 {
+  check_battery_loop(&battey,battery_check_loop);
   power_check(&power_manager);
   hc165_scan(&hc165, key_map, btn165);
 }
