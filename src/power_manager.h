@@ -43,7 +43,7 @@ struct lipo_t
   float MaxVoltage;
   float MinVoltage;
   uint8_t percent;
-  int check_en;//0:不检测 1:检测
+  int check_en;//0:检测 1:不检测
   int power_check_pin;
   bool is_low_power ;
   int check_timer;

@@ -21,7 +21,7 @@ power_manager_t power_manager;
 
 //LED
 #define LED 2       // led引脚
-
+int led_timer=0;
 
 //165
 #define DATA 25     // 数据
@@ -66,6 +66,14 @@ void battery_check_loop_handle()
 {
   ble.setBatteryLevel(battey.percent);
 
+}
+
+void low_battery_task_handle()
+{
+  if(millis() - led_timer > 500){
+    led_timer = millis();
+    digitalWrite(LED, !digitalRead(LED));
+  }
 }
 
 // weak定义函数

@@ -36,8 +36,8 @@ void battery_init(lipo_t *lipo,int en_pin,int check_pin)
     lipo->percent = get_battery_percent(lipo);
     lipo->is_low_power = is_battery_low(lipo);
     lipo->power_check_pin = check_pin;
-    lipo->MaxVoltage = 4.7;
-    lipo->MinVoltage = 3.3;
+    lipo->MaxVoltage = 4.2;
+    lipo->MinVoltage = 3.0;
     
     //todo add check
 
@@ -96,6 +96,10 @@ _weak_ void battery_check_loop_handle(){
     // 电池检测循环 回调函数
 };
 
+_weak_ void low_battery_task_handle(){
+    // 低电量模式 回调函数
+};
+
 /**
  * @brief 电池检测循环
 */
@@ -110,7 +114,8 @@ void check_battery_loop(lipo_t *lipo,int time_loop)
             #if LOG_TAG
             Serial.println("low power");
             #endif
-            power_mode_switch(lowpower);
+            // power_mode_switch(lowpower);
+            low_battery_task_handle();
         }
     }
 
