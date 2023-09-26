@@ -30,14 +30,15 @@ void battery_init(lipo_t *lipo,int en_pin,int check_pin)
 {
     
     lipo->check_en = en_pin;
+    lipo->power_check_pin = check_pin;
     pinMode(lipo->check_en, OUTPUT);
     CHECK_EN_DISABLE(lipo->check_en);
     lipo->voltage = get_battery_voltage(lipo);
     lipo->percent = get_battery_percent(lipo);
     lipo->is_low_power = is_battery_low(lipo);
-    lipo->power_check_pin = check_pin;
+    
     lipo->MaxVoltage = 4.2;
-    lipo->MinVoltage = 3.0;
+    lipo->MinVoltage = 3.8;
     
     //todo add check
 
@@ -49,9 +50,18 @@ void battery_init(lipo_t *lipo,int en_pin,int check_pin)
 */
 double get_battery_voltage(lipo_t *lipo)
 {
+    int vref = 1100;
+    double temp;
+    int battery_sample_rates = 1000;
     CHECK_EN_ENABLE(lipo->check_en);
     delay(1);
-    double voltage = analogRead(lipo->power_check_pin) * 2 * 3.3 / 4095;
+    for(int i = 0 ;i < battery_sample_rates ; i++)
+    {
+        temp += analogRead(lipo->power_check_pin);
+    }
+    double voltage = (temp / battery_sample_rates) * 2 * 3.3 * (vref / 1000.0) / 4095.0;
+    // double voltage = analogRead(lipo->power_check_pin) * 2 * 3.3 / 4095;
+    // double voltage = ((float)analogRead(lipo->power_check_pin) / 4095.0) * 2.0 * 3.3 * (vref / 1000.0);
     CHECK_EN_DISABLE(lipo->check_en);
     return voltage;
 };
@@ -62,6 +72,7 @@ double get_battery_voltage(lipo_t *lipo)
 */
 uint8_t get_battery_percent(lipo_t *lipo)
 {
+    
     lipo->voltage = get_battery_voltage(lipo);
     lipo->percent = (lipo->voltage - lipo->MinVoltage) / (lipo->MaxVoltage - lipo->MinVoltage) * 100;
     if (lipo->percent > 100)
