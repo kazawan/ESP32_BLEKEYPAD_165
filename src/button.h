@@ -1,6 +1,9 @@
 #ifndef BUTTON_H
 #define BUTTON_H
 #include <Arduino.h>
+#define _weak_ __attribute__((weak)) // 弱引用
+
+
 #define btn_sample_rate 300 // 按键扫描频率
 
 
@@ -15,7 +18,7 @@ struct BTN_t
    
 };
 
-void btn_init(BTN_t *btn,int pin);
+void btn_init(BTN_t *btn,int pin,int external_pullup = -1);
 void btn_scan(BTN_t *p);
 
 

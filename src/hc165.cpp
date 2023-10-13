@@ -76,12 +76,12 @@ void hc165_scan(HC165_typeDef *hc165,KEYMAP_typeDef *key_map,BTN165_typeDef *btn
                         btn165[i].current_time = millis();
                         // Serial.print("press: ");
                         press_handler(i);
-                        Serial.println(key_map[i].key_value);
+                        // Serial.println(key_map[i].key_value);
                     }
                 }else if(btn165[i].keyup == 0 && btn165[i].state == 0)
                 {
                     release_handler(i);
-                    Serial.println(key_map[i].key_value);
+                    // Serial.println(key_map[i].key_value);
                     btn165[i].keyup = 1;
                 }
                 CLKUP(hc165->clock_pin);

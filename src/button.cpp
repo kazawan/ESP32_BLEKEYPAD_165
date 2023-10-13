@@ -1,14 +1,27 @@
 #include "button.h"
 
-void btn_init(BTN_t *btn,int pin)
+void btn_init(BTN_t *btn,int pin,int external_pullup)
 {
     btn->pin = pin;
-    pinMode(btn->pin, INPUT_PULLUP);
+    if (external_pullup != -1)
+    {
+      pinMode(btn->pin, INPUT_PULLUP);
+    }
+    else
+    {
+      pinMode(btn->pin, INPUT);
+    }
     btn->keyup = 1;
     btn->current_time = 0;
     btn->debouce_time = 20;
     btn->long_time_release = 0;
     btn->pin_read = 1;
+}
+
+
+_weak_ void fn_key_handler()
+{
+  // Serial.println("weak");
 }
 
 void btn_scan(BTN_t* p)
@@ -33,7 +46,7 @@ void btn_scan(BTN_t* p)
           p->keyup = 0;
 
           //*****你的程序在这下面*********
-          Serial.println("pressed");
+          // Serial.println("pressed");
           //*****************************
 
         }
@@ -43,12 +56,12 @@ void btn_scan(BTN_t* p)
         {
           
           p->keyup = 1;
-          Serial.println("long release");
+          // Serial.println("long release");
         } else
         {
           p->keyup = 1;
-          
-          Serial.println("short release");
+          fn_key_handler();
+          // Serial.println("short release");
         }
 
       }

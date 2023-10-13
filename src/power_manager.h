@@ -56,9 +56,12 @@ void power_check(power_manager_t *power_manager);
 int get_sleep_flag(power_manager_t *power_manager); //获取睡眠标志位
 void reset_sleep_timer(power_manager_t *power_manager); 
 
-void battery_init(lipo_t *lipo,int en_pin,int check_pin);
+void battery_init(lipo_t *lipo,int check_pin,int en_pin = -1);
+
 double get_battery_voltage(lipo_t *lipo);
 uint8_t get_battery_percent(lipo_t *lipo);
 bool is_battery_low(lipo_t *lipo);
 void check_battery_loop(lipo_t *lipo,int time_loop);
+
+
 #endif // POWER_MANAGER_H_

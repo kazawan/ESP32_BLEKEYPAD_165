@@ -14,11 +14,13 @@ BTN_t fn;
 #define check_en 14
 #define check_pin 35
 lipo_t battey;
-#define battery_check_loop 1000 // 电池检测时间
+// #define battery_check_loop 1000 * 60 // 电池检测时间
+#define battery_check_loop 1000 * 5 // 电池检测时间
 
 // POWER
 power_manager_t power_manager;
-#define SLEEP_OVER_TIME 1000 * 60 * 15 // 睡眠时间
+#define SLEEP_OVER_TIME 1000 * 60 * 10// 睡眠时间
+
 
 // LED
 #define LED 2 // led引脚
@@ -31,6 +33,7 @@ int led_timer = 0;
 #define key_nums 16 // 按键数量
 
 #define enter 0xB0
+#define ESC 0xB1
 
 BleKeyboard ble;
 BTN165_typeDef btn165[key_nums];
@@ -69,19 +72,7 @@ void battery_check_loop_handle()
  
 }
 
-void low_battery_task_handle()
-{
-  if (is_battery_low)
-  {
-    if (millis() - led_timer > 500)
-    {
-      led_timer = millis();
-      digitalWrite(LED, !digitalRead(LED));
-    }
-  }else{
-    digitalWrite(LED, 1);
-  }
-}
+
 
 // weak定义函数
 void press_handler(int i)
@@ -89,6 +80,7 @@ void press_handler(int i)
 
   ble.press(key_map[i].key_value);
   reset_sleep_timer(&power_manager);
+  // reset_sleep_timer(&power_manager);
 }
 // weak定义函数
 void release_handler(int i)
@@ -96,23 +88,37 @@ void release_handler(int i)
   ble.release(key_map[i].key_value);
 };
 
-void full_power_task_handle(){
-    // digitalWrite(LED, HIGH);
-};
+void full_power_task_handle()
+{
+  if(digitalRead(LED) == 0){
+    digitalWrite(LED, 1);
+  }
+}
 
-void low_power_task_handle(){
-    // digitalWrite(LED, LOW);
+void low_power_task_handle()
+
+{
+  if(digitalRead(LED) == 1){
+    digitalWrite(LED, 0);
+  }
+}
+
+void fn_key_handler()
+{
+  ble.press(KEY_ESC);
+  ble.release(KEY_ESC);
 };
 
 void setup()
 {
-  Serial.begin(115200);
+  // Serial.begin(115200);
+  // esp_sleep_enable_ext0_wakeup(GPIO_NUM_19, 0); // 1 = High, 0 = Low0
   pinMode(LED, OUTPUT);
   digitalWrite(LED, 1);
-  battery_init(&battey, check_en, check_pin);
+  battery_init(&battey, check_pin );
   power_manager_init(&power_manager, fullpower, SLEEP_OVER_TIME);
   hc165_init(&hc165, btn165, key_nums);
-  btn_init(&fn, FN);
+  btn_init(&fn, FN,1);
   ble.begin();
   ble.setBatteryLevel(get_battery_percent(&battey));
 }
@@ -123,4 +129,6 @@ void loop()
   power_check(&power_manager);
   hc165_scan(&hc165, key_map, btn165);
   btn_scan(&fn);
+
+
 }
