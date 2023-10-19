@@ -136,6 +136,8 @@ void check_battery_loop(lipo_t *lipo,int time_loop)
             #endif
             // power_mode_switch(lowpower);
             low_battery_task_handle();
+            //电量不够进入待机
+            esp_deep_sleep_start();
         }
     }
 
@@ -233,9 +235,9 @@ void power_check(power_manager_t *power_manager)
     }
     else
     {
-        power_mode_switch(lowpower);
+        // power_mode_switch(lowpower);
         //! 低功耗模式 测试
-        // esp_deep_sleep_start();
+        esp_deep_sleep_start();
     }
 };
 

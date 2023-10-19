@@ -7,7 +7,7 @@
 // ttl
 //  BluetoothSerial BT;
 // button
-#define FN 19
+#define FN 33
 BTN_t fn;
 
 // 添加电源检测
@@ -15,11 +15,11 @@ BTN_t fn;
 #define check_pin 35
 lipo_t battey;
 // #define battery_check_loop 1000 * 60 // 电池检测时间
-#define battery_check_loop 1000 * 5 // 电池检测时间
+#define battery_check_loop 1000 * 60 * 5 // 电池检测时间
 
 // POWER
 power_manager_t power_manager;
-#define SLEEP_OVER_TIME 1000 * 60 * 10// 睡眠时间
+#define SLEEP_OVER_TIME 1000 * 60 * 10// 10分钟进入待机
 
 
 // LED
@@ -74,6 +74,7 @@ void battery_check_loop_handle()
 
 
 
+
 // weak定义函数
 void press_handler(int i)
 {
@@ -112,7 +113,7 @@ void fn_key_handler()
 void setup()
 {
   // Serial.begin(115200);
-  // esp_sleep_enable_ext0_wakeup(GPIO_NUM_19, 0); // 1 = High, 0 = Low0
+  esp_sleep_enable_ext0_wakeup(GPIO_NUM_33, 0); // 1 = High, 0 = Low0
   pinMode(LED, OUTPUT);
   digitalWrite(LED, 1);
   battery_init(&battey, check_pin );
